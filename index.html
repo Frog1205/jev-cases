@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jev 通关实战和案例集 · 207 个社区案例分类浏览</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --text: #1c2024; --muted: #60646c;
+    --line: #e0e1e6; --accent: #3e63dd; --radius: 12px;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181c; --panel: #1e2025; --text: #ecedee; --muted: #9a9ea6;
+    --line: #2e3037; --accent: #6e93ff;
+  }
+  :root[data-theme="dark"] header.hero { background: #0a0b0e; }
+  :root[data-theme="dark"] .cat-btn:hover { background: #26282e; }
+  :root[data-theme="dark"] .cat-btn[aria-pressed="true"] { background: #232a45; }
+  :root[data-theme="dark"] mark { background: #7a6a1c; color: #fff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  header.hero { background: #111318; color: #fff; padding: 48px 0 36px; }
+  .hero h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em; }
+  .hero p { color: #b0b4ba; margin-top: 8px; max-width: 680px; }
+  .hero-intro { margin-top: 16px; font-size: 14px; line-height: 1.8; max-width: 640px; }
+  .hero-stats { display: flex; gap: 32px; margin-top: 24px; flex-wrap: wrap; }
+  .hero-stats strong { display: block; font-size: 28px; }
+  .hero-stats span { color: #b0b4ba; font-size: 13px; }
+
+  .dist { display: flex; height: 10px; border-radius: 99px; overflow: hidden; margin-top: 28px; }
+  .dist span { display: block; height: 100%; }
+  .dist-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 12px; color: #b0b4ba; }
+  .dist-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+
+  .tabs { display: flex; gap: 6px; margin-top: 28px; border-bottom: 1px solid rgba(255,255,255,.12); flex-wrap: wrap; }
+  .tab-btn {
+    padding: 10px 16px; border: 0; background: none; color: #b0b4ba; font: inherit;
+    font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: #fff; }
+  .tab-btn[aria-selected="true"] { color: #fff; border-bottom-color: var(--accent); font-weight: 600; }
+  .tab-panel[hidden] { display: none; }
+
+  .placeholder-panel { max-width: 560px; margin: 60px auto; text-align: center; padding: 0 20px; }
+  .placeholder-panel .ico { font-size: 40px; }
+  .placeholder-panel h2 { font-size: 20px; margin-top: 12px; }
+  .placeholder-panel p { color: var(--muted); margin-top: 8px; }
+  .placeholder-panel .cta {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; padding: 10px 20px;
+    border-radius: 10px; background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600;
+  }
+  .placeholder-panel .cta[aria-disabled="true"] { background: var(--line); color: var(--muted); cursor: not-allowed; pointer-events: none; }
+
+  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 28px; padding: 28px 0 60px; }
+  aside { position: sticky; top: 16px; align-self: start; }
+  .cat-list { list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px; }
+  .cat-btn {
+    width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 10px;
+    border: 0; background: none; border-radius: 8px; cursor: pointer; font: inherit;
+    font-size: 14px; color: var(--text); text-align: left;
+  }
+  .cat-btn:hover { background: #f0f0f3; }
+  .cat-btn[aria-pressed="true"] { background: #edf2fe; color: var(--accent); font-weight: 600; }
+  .cat-btn:focus-visible, .toolbar :focus-visible, .card a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cat-btn .ico { width: 22px; text-align: center; }
+  .cat-btn .name { flex: 1; }
+  .cat-btn .num { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .toolbar input[type=search] {
+    flex: 1; min-width: 220px; padding: 11px 14px; font: inherit; font-size: 15px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+  }
+  .toolbar select, .seg button {
+    padding: 10px 12px; font: inherit; font-size: 14px; border: 1px solid var(--line);
+    background: var(--panel); border-radius: 10px; cursor: pointer; color: var(--text);
+  }
+  .seg { display: inline-flex; }
+  .seg button { border-radius: 0; }
+  .seg button:first-child { border-radius: 10px 0 0 10px; }
+  .seg button:last-child { border-radius: 0 10px 10px 0; border-left: 0; }
+  .seg button[aria-pressed="true"] { background: var(--text); color: #fff; border-color: var(--text); }
+
+  .cat-head { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px; border-left: 4px solid var(--c, var(--accent)); }
+  .cat-head h2 { font-size: 18px; }
+  .cat-head p { color: var(--muted); font-size: 14px; }
+  .count { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); transition: box-shadow .15s, transform .15s; }
+  .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
+  .card a { display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 16px; text-decoration: none; border-radius: var(--radius); }
+  .card-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+  .summary { font-size: 15px; flex: 1; }
+  .card-foot { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+  .card-foot b { color: var(--accent); font-weight: 600; }
+  mark { background: #ffef5c; border-radius: 2px; }
+  .empty { text-align: center; padding: 60px 0; color: var(--muted); }
+  footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: 13px; text-align: center; }
+
+  .theme-btn {
+    position: fixed; top: 16px; right: 20px; z-index: 20;
+    width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08); color: #fff; font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.16); }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 30;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay[hidden] { display: none; }
+  .modal {
+    background: var(--panel); border-radius: var(--radius); max-width: 560px; width: 100%;
+    max-height: 80vh; overflow-y: auto; padding: 24px; position: relative; border: 1px solid var(--line);
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 50%;
+    border: 0; background: var(--bg); color: var(--text); font-size: 16px; cursor: pointer;
+  }
+  .modal .chip { margin-bottom: 12px; }
+  .modal h3 { font-size: 16px; margin-bottom: 14px; line-height: 1.5; }
+  .modal .modal-en { color: var(--muted); font-size: 14px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+  .modal .modal-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
+  .modal .modal-link { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .layout > * { min-width: 0; }
+    aside { position: static; }
+    .cat-list { display: flex; overflow-x: auto; gap: 4px; }
+    .cat-btn { white-space: nowrap; width: auto; }
+    .cat-btn .num { margin-left: 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+</style>
+</head>
+<body>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="切换深色/浅色模式">🌙</button>
+<header class="hero">
+  <div class="wrap">
+    <h1>Jev 通关实战和案例集</h1>
+    <p>收录 207 个社区案例，按应用场景分成 12 类，持续更新中。</p>
+    <p class="hero-intro">让 AI 从"会说话"，走向"会做决定"。<br>
+    Jev 是 TypeSafe AI 推出的 System One Model。<br>
+    它不追求生成漂亮的文本，而是专门解决软件中的判断问题：<br>
+    分类、选择、评分、路由、排序、风险判断和置信度评估。AI 已经会聊天，也开始会干活。<br>
+    接下来，它需要学会做决定。<br>
+    Jev：为软件而生的 System One Model</p>
+    <div class="hero-stats">
+      <div><strong id="stTotal">0</strong><span>精选案例</span></div>
+      <div><strong id="stCats">0</strong><span>应用分类</span></div>
+      <div><strong id="stAuthors">0</strong><span>社区作者</span></div>
+      <div><strong id="stRange">-</strong><span>时间跨度</span></div>
+    </div>
+    <div class="dist" id="dist" role="img" aria-label="各分类案例数量分布"></div>
+    <div class="dist-legend" id="distLegend"></div>
+    <div class="tabs" role="tablist" aria-label="主导航">
+      <button class="tab-btn" id="tabBtnCases" type="button" role="tab" aria-selected="true" aria-controls="panelCases">案例</button>
+      <button class="tab-btn" id="tabBtnPlayground" type="button" role="tab" aria-selected="false" aria-controls="panelPlayground">动手使用</button>
+      <button class="tab-btn" id="tabBtnManual" type="button" role="tab" aria-selected="false" aria-controls="panelManual">手册</button>
+      <button class="tab-btn" id="tabBtnContact" type="button" role="tab" aria-selected="false" aria-controls="panelContact">联系我</button>
+    </div>
+  </div>
+</header>
+
+<div class="tab-panel" id="panelCases" role="tabpanel" aria-labelledby="tabBtnCases">
+  <div class="wrap layout">
+    <aside aria-label="案例分类">
+      <ul class="cat-list" id="catList"></ul>
+    </aside>
+
+    <main>
+      <div class="toolbar">
+        <label for="q" class="sr-only" style="position:absolute;left:-9999px">搜索案例</label>
+        <input type="search" id="q" placeholder="搜索摘要、英文原文或作者，如：游戏、路由、@parcadei">
+        <label for="sort" style="position:absolute;left:-9999px">排序方式</label>
+        <select id="sort">
+          <option value="id">按编号</option>
+          <option value="new">最新优先</option>
+          <option value="old">最早优先</option>
+        </select>
+        <div class="seg" role="group" aria-label="摘要语言">
+          <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+          <button type="button" data-lang="en" aria-pressed="false">English</button>
+        </div>
+      </div>
+      <div class="cat-head" id="catHead" hidden></div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>没有找到匹配的案例，换个关键词试试。</p>
+    </main>
+  </div>
+</div>
+
+<div class="tab-panel" id="panelPlayground" role="tabpanel" aria-labelledby="tabBtnPlayground" hidden>
+  <div class="placeholder-panel">
+    <div class="ico">🛝</div>
+    <h2>动手使用</h2>
+    <p>模拟版 Playground 正在制作中，上线后可以在这里直接体验 Jev 的判断能力。</p>
+    <span class="cta" aria-disabled="true">即将上线</span>
+  </div>
+</div>
+
+<div class="tab-panel" id="panelManual" role="tabpanel" aria-labelledby="tabBtnManual" hidden>
+  <div class="placeholder-panel">
+    <div class="ico">📘</div>
+    <h2>手册</h2>
+    <p>完整使用手册托管在飞书文档。</p>
+    <a class="cta" id="manualLink" href="https://cxbbqb45sgq.feishu.cn/wiki/EhaEwCX5rixrDDk5FzUcrNPPn2b?from=from_copylink" target="_blank" rel="noopener noreferrer">前往飞书手册 →</a>
+  </div>
+</div>
+
+<div class="tab-panel" id="panelContact" role="tabpanel" aria-labelledby="tabBtnContact" hidden>
+  <div class="placeholder-panel">
+    <div class="ico">💬</div>
+    <h2>联系我</h2>
+    <p>问题、建议或想投稿案例，欢迎在 GitHub 或微信找我。</p>
+    <a class="cta" href="https://github.com/1205" target="_blank" rel="noopener noreferrer">GitHub @1205 →</a>
+    <p class="wechat-row">微信：<b>xqr1019</b></p>
+  </div>
+</div>
+
+<footer>
+  案例来自社区分享与公开信息整理，分类为本站整理，仅供参考
+</footer>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" type="button" aria-label="关闭">✕</button>
+    <span class="chip" id="modalChip"></span>
+    <h3 id="modalTitle"></h3>
+    <p class="modal-en" id="modalEn"></p>
+    <div class="modal-meta">
+      <span id="modalMeta"></span>
+      <a class="modal-link" id="modalLink" target="_blank" rel="noopener noreferrer">查看原帖 →</a>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+  const CATS = window.JEV_CATEGORIES;
+  const CASES = window.JEV_CASES.map(([id, cat, author, url, zh, en, date]) => ({ id, cat, author, url, zh, en, date }));
+  const catById = Object.fromEntries(CATS.map(c => [c.id, c]));
+  const counts = CASES.reduce((m, c) => (m[c.cat] = (m[c.cat] || 0) + 1, m), {});
+  const state = { cat: 'all', q: '', sort: 'id', lang: 'zh' };
+
+  const $ = id => document.getElementById(id);
+  const esc = s => s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const highlight = (text, q) => {
+    const safe = esc(text);
+    if (!q) return safe;
+    const re = new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    return safe.replace(re, m => `<mark>${m}</mark>`);
+  };
+
+  // 顶部统计
+  const dates = CASES.map(c => c.date).sort();
+  $('stTotal').textContent = CASES.length;
+  $('stCats').textContent = CATS.length;
+  $('stAuthors').textContent = new Set(CASES.map(c => c.author.toLowerCase())).size;
+  $('stRange').textContent = `${dates[0].slice(5)} ~ ${dates[dates.length - 1].slice(5)}`;
+
+  // 分布条（按数量降序）
+  const sorted = [...CATS].sort((a, b) => counts[b.id] - counts[a.id]);
+  $('dist').innerHTML = sorted.map(c =>
+    `<span style="width:${counts[c.id] / CASES.length * 100}%;background:${c.color}" title="${c.name} ${counts[c.id]}"></span>`).join('');
+  $('distLegend').innerHTML = sorted.map(c =>
+    `<span><i style="background:${c.color}"></i>${c.name} ${counts[c.id]}</span>`).join('');
+
+  // 侧边分类
+  $('catList').innerHTML =
+    `<li><button class="cat-btn" data-cat="all" aria-pressed="true"><span class="ico">✨</span><span class="name">全部案例</span><span class="num">${CASES.length}</span></button></li>` +
+    sorted.map(c => `<li><button class="cat-btn" data-cat="${c.id}" aria-pressed="false"><span class="ico">${c.icon}</span><span class="name">${c.name}</span><span class="num">${counts[c.id]}</span></button></li>`).join('');
+
+  function render() {
+    const q = state.q.trim().toLowerCase();
+    let list = CASES.filter(c =>
+      (state.cat === 'all' || c.cat === state.cat) &&
+      (!q || (c.zh + ' ' + c.en + ' @' + c.author).toLowerCase().includes(q)));
+    if (state.sort === 'new') list.sort((a, b) => b.date.localeCompare(a.date) || a.id - b.id);
+    else if (state.sort === 'old') list.sort((a, b) => a.date.localeCompare(b.date) || b.id - a.id);
+
+    const head = $('catHead');
+    if (state.cat === 'all') head.hidden = true;
+    else {
+      const c = catById[state.cat];
+      head.hidden = false;
+      head.style.setProperty('--c', c.color);
+      head.innerHTML = `<h2>${c.icon} ${c.name}</h2><p>${c.desc}</p>`;
+    }
+
+    $('count').textContent = `共 ${list.length} 条案例`;
+    $('empty').hidden = list.length > 0;
+    $('grid').innerHTML = list.map(c => {
+      const cat = catById[c.cat];
+      const text = state.lang === 'en' && c.en ? c.en : c.zh;
+      return `<article class="card" style="--c:${cat.color}">
+        <a href="#" data-id="${c.id}" aria-label="查看详情：${esc(c.zh)}">
+          <div class="card-top"><span class="chip">${cat.icon} ${cat.name}</span><span>#${String(c.id).padStart(3, '0')}</span></div>
+          <p class="summary">${highlight(text, state.q.trim())}</p>
+          <div class="card-foot"><span>${highlight('@' + c.author, state.q.trim())} · <time datetime="${c.date}">${c.date}</time></span><b>详情 →</b></div>
+        </a></article>`;
+    }).join('');
+  }
+
+  function openModal(id) {
+    const c = CASES.find(x => x.id === id);
+    if (!c) return;
+    const cat = catById[c.cat];
+    $('modalChip').textContent = `${cat.icon} ${cat.name}`;
+    $('modalChip').style.setProperty('--c', cat.color);
+    $('modalTitle').textContent = c.zh;
+    $('modalEn').textContent = c.en || '';
+    $('modalEn').hidden = !c.en;
+    $('modalMeta').textContent = `@${c.author} · ${c.date}`;
+    $('modalLink').href = c.url;
+    $('modalOverlay').hidden = false;
+  }
+  function closeModal() { $('modalOverlay').hidden = true; }
+
+  $('catList').addEventListener('click', e => {
+    const btn = e.target.closest('.cat-btn');
+    if (!btn) return;
+    state.cat = btn.dataset.cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    render();
+  });
+  $('q').addEventListener('input', e => { state.q = e.target.value; render(); });
+  $('sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  document.querySelector('.seg').addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    state.lang = btn.dataset.lang;
+    document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    render();
+  });
+
+  $('grid').addEventListener('click', e => {
+    const a = e.target.closest('a[data-id]');
+    if (!a) return;
+    e.preventDefault();
+    openModal(Number(a.dataset.id));
+  });
+  $('modalClose').addEventListener('click', closeModal);
+  $('modalOverlay').addEventListener('click', e => { if (e.target === $('modalOverlay')) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  const tabs = [
+    ['tabBtnCases', 'panelCases'],
+    ['tabBtnPlayground', 'panelPlayground'],
+    ['tabBtnManual', 'panelManual'],
+    ['tabBtnContact', 'panelContact'],
+  ];
+  function selectTab(panelId) {
+    tabs.forEach(([btnId, pId]) => {
+      $(btnId).setAttribute('aria-selected', pId === panelId);
+      $(pId).hidden = pId !== panelId;
+    });
+  }
+  tabs.forEach(([btnId, pId]) => $(btnId).addEventListener('click', () => selectTab(pId)));
+
+  const themeBtn = $('themeBtn');
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('jev-theme', theme);
+  }
+  const savedTheme = localStorage.getItem('jev-theme')
+    || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
+  themeBtn.addEventListener('click', () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
