@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Playground · Jev 判断演示</title>
+<style>
+  :root { --bg:#f6f7f9; --panel:#fff; --text:#1c2024; --muted:#60646c; --line:#e0e1e6; --accent:#3e63dd; --ok:#30a46c; --warn:#d6a100; --bad:#e5484d; --radius:12px; }
+  :root[data-theme="dark"] { --bg:#17181c; --panel:#1e2025; --text:#ecedee; --muted:#9a9ea6; --line:#2e3037; --accent:#6e93ff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  a { color:var(--accent); }
+  button, input, select, textarea { font:inherit; color:inherit; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .sr { position:absolute; left:-9999px; }
+  .wrap { max-width:1280px; margin:0 auto; padding:0 24px; }
+  header { background:#111318; color:#fff; padding:28px 0 24px; }
+  header .row { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; }
+  header h1 { font-size:clamp(24px,3.2vw,32px); letter-spacing:-.02em; }
+  header p { color:#b0b4ba; font-size:14px; margin-top:4px; }
+  header nav { display:flex; gap:8px; align-items:center; }
+  header nav a, .icon-btn { color:#fff; text-decoration:none; font-size:14px; padding:8px 14px; border:1px solid rgba(255,255,255,.22); border-radius:10px; background:rgba(255,255,255,.06); cursor:pointer; }
+  .status { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; font-size:13px; }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:99px; background:rgba(255,255,255,.08); color:#d5d7db; }
+  .pill i { width:8px; height:8px; border-radius:50%; background:#8b8d98; }
+  .pill.on i { background:var(--ok); } .pill.off i { background:var(--bad); }
+  .notice { margin:20px 0 0; padding:14px 16px; border-radius:10px; border-left:4px solid var(--warn); background:color-mix(in srgb,var(--warn) 10%,var(--panel)); font-size:14px; }
+  .notice code, .cmd { font-family:ui-monospace,Consolas,monospace; font-size:13px; background:color-mix(in srgb,var(--text) 8%,transparent); padding:1px 6px; border-radius:6px; }
+  .notice pre { margin-top:8px; white-space:pre-wrap; }
+  .notice[hidden] { display:none; }
+  .layout { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:20px; padding:24px 0 60px; align-items:start; }
+  .layout > * { min-width:0; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-bottom:16px; }
+  .card-head { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+  .card-head h2 { font-size:16px; display:flex; align-items:center; gap:10px; }
+  .no { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-size:13px; font-weight:700; color:#fff; background:var(--accent); flex:none; }
+  .muted { color:var(--muted); font-size:13px; }
+  .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel); font-size:14px; cursor:pointer; }
+  .btn:hover { border-color:var(--accent); color:var(--accent); }
+  .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  .btn.primary:hover { filter:brightness(1.08); color:#fff; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .btn.sm { padding:4px 10px; font-size:13px; }
+  .btn.danger:hover { border-color:var(--bad); color:var(--bad); }
+  textarea, input[type=text], select { width:100%; border:1px solid var(--line); border-radius:10px; background:var(--panel); padding:10px 12px; font-size:14px; }
+  textarea { resize:vertical; min-height:140px; }
+  textarea.mono { font-family:ui-monospace,Consolas,monospace; font-size:13px; }
+  .row-between { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .presets { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .presets button[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .q { border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:12px; border-left:4px solid var(--c); }
+  .q-noul { --c:var(--ok); } .q-choice { --c:var(--accent); } .q-score { --c:var(--warn); }
+  .q-top { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+  .tag { font-family:ui-monospace,Consolas,monospace; font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; color:var(--c); background:color-mix(in srgb,var(--c) 14%,transparent); }
+  .q-top input { flex:1; min-width:120px; padding:6px 10px; font-family:ui-monospace,Consolas,monospace; font-size:13px; }
+  .q label { display:block; font-size:12px; color:var(--muted); margin:8px 0 4px; }
+  .q textarea { min-height:60px; }
+  .opt { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr) auto; gap:6px; margin-bottom:6px; align-items:center; }
+  .opt.level { grid-template-columns:auto minmax(0,1fr) auto; }
+  .opt .lv { font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--muted); width:22px; text-align:center; }
+  .opt input { padding:6px 10px; }
+  .add-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .run-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .run-bar select { width:auto; }
+  .check { display:inline-flex; align-items:center; gap:6px; font-size:14px; cursor:pointer; }
+  .result-empty { text-align:center; color:var(--muted); padding:40px 10px; }
+  .result-empty b { display:block; color:var(--text); font-size:16px; margin-bottom:4px; }
+  .metrics { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+  .metric { flex:1; min-width:110px; border:1px solid var(--line); border-radius:10px; padding:8px 12px; }
+  .metric b { display:block; font-size:18px; font-variant-numeric:tabular-nums; }
+  .metric span { font-size:12px; color:var(--muted); }
+  .ans { border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px; border-left:4px solid var(--c); }
+  .ans-head { display:flex; justify-content:space-between; gap:8px; align-items:center; flex-wrap:wrap; }
+  .ans-head .qid { font-family:ui-monospace,Consolas,monospace; font-size:13px; font-weight:700; }
+  .ans .instr { font-size:13px; color:var(--muted); margin:4px 0 8px; }
+  .verdict { font-size:18px; font-weight:700; }
+  .conf { font-size:12px; color:var(--muted); }
+  .bars { display:grid; gap:6px; margin-top:8px; }
+  .bar { display:grid; grid-template-columns:minmax(70px,.9fr) minmax(0,2fr) 52px; gap:8px; align-items:center; font-size:13px; }
+  .bar .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bar .track { height:8px; border-radius:99px; background:color-mix(in srgb,var(--text) 8%,transparent); overflow:hidden; }
+  .bar .fill { height:100%; background:var(--c); border-radius:inherit; transition:width .5s cubic-bezier(.2,.7,.2,1); }
+  .bar.top .name { font-weight:700; }
+  .bar .pct { text-align:right; font-variant-numeric:tabular-nums; color:var(--muted); }
+  .llm { margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); font-size:13px; }
+  .llm b { color:var(--text); }
+  .llm .match { font-weight:700; } .llm .yes { color:var(--ok); } .llm .no-m { color:var(--bad); }
+  .error { color:var(--bad); background:color-mix(in srgb,var(--bad) 8%,var(--panel)); border:1px solid color-mix(in srgb,var(--bad) 30%,var(--line)); border-radius:10px; padding:10px 14px; font-size:14px; margin-bottom:12px; white-space:pre-wrap; word-break:break-word; }
+  details { margin-top:10px; }
+  summary { cursor:pointer; font-size:14px; color:var(--muted); }
+  pre.code { margin-top:8px; background:#111318; color:#d5d7db; border-radius:10px; padding:12px; font-family:ui-monospace,Consolas,monospace; font-size:12px; overflow:auto; max-height:360px; white-space:pre; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#111318; color:#fff; padding:10px 18px; border-radius:10px; font-size:14px; z-index:50; }
+  .toast[hidden] { display:none; }
+  .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @media (max-width:960px) { .layout { grid-template-columns:minmax(0,1fr); } }
+  @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="row">
+      <div>
+        <h1>Atlas Playground</h1>
+        <p>一段文本进去，一组带概率的判断出来。支持 Yes/No、Choice、Score 三种问题，可与 DeepSeek 对比。</p>
+      </div>
+      <nav>
+        <a href="index.html">← 案例集</a>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色/浅色模式">🌙</button>
+      </nav>
+    </div>
+    <div class="status" aria-live="polite">
+      <span class="pill" id="pillJev"><i></i>Jev：检测中</span>
+      <span class="pill" id="pillLlm"><i></i>DeepSeek：检测中</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="notice" id="setupNotice" hidden>
+    <b id="setupTitle">需要在本地配置环境变量</b>
+    <p id="setupDesc">API Key 和接口地址只从本机环境变量读取，不会出现在网页里。配置后重启本地服务：</p>
+    <pre><span class="cmd">setx TypeSafe_Key "你的 Jev API Key"</span>
+<span class="cmd">setx DEEPSEEK_API_KEY "你的 DeepSeek API Key"</span>
+<span class="cmd">setx TYPESAFE_BASE_URL "https://api.typesafe.ai"</span>   （可选，第三方平台可改成 https://jevmodel.org）
+<span class="cmd">setx DEEPSEEK_BASE_URL "https://api.deepseek.com"</span>  （可选）
+<span class="cmd">python playground_server.py</span>   然后打开 http://127.0.0.1:8787/playground.html</pre>
+  </div>
+
+  <div class="layout">
+    <div>
+      <section class="card" aria-labelledby="hState">
+        <div class="card-head">
+          <h2 id="hState"><span class="no">1</span>要判断的文本（state）</h2>
+          <button class="btn sm" id="resetBtn" type="button">重置示例</button>
+        </div>
+        <div class="presets" id="presets" role="group" aria-label="示例场景"></div>
+        <label class="sr" for="stateInput">要判断的文本</label>
+        <textarea id="stateInput" maxlength="8000" placeholder="粘贴一段客服工单、评论、新闻或 JSON 状态……"></textarea>
+        <div class="row-between">
+          <label class="check"><input type="checkbox" id="stateJson"> 按 JSON 解析</label>
+          <span class="muted" id="charCount">0 / 8000</span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="hQs">
+        <div class="card-head">
+          <h2 id="hQs"><span class="no">2</span>问题 <span class="muted" id="qCount">0 / 8</span></h2>
+          <div class="add-row">
+            <button class="btn sm" type="button" data-add="noul">+ Yes/No</button>
+            <button class="btn sm" type="button" data-add="choice">+ Choice</button>
+            <button class="btn sm" type="button" data-add="score">+ Score</button>
+          </div>
+        </div>
+        <div id="questions"></div>
+        <p class="muted" id="qEmpty" hidden>还没有问题，点右上角添加一个。</p>
+      </section>
+
+      <section class="card" aria-labelledby="hRun">
+        <div class="card-head"><h2 id="hRun"><span class="no">3</span>运行</h2></div>
+        <div class="run-bar">
+          <label class="sr" for="modelSel">Jev 模型</label>
+          <select id="modelSel">
+            <option value="jev-latest">jev-latest（推荐）</option>
+            <option value="jev-1.13.0">jev-1.13.0</option>
+            <option value="jev-preview">jev-preview</option>
+          </select>
+          <label class="check"><input type="checkbox" id="compareLlm"> 同时问 DeepSeek</label>
+          <button class="btn primary" id="runBtn" type="button">运行 Jev</button>
+        </div>
+        <div class="row-between" style="margin-top:12px">
+          <div class="add-row">
+            <button class="btn sm" id="copyApi" type="button">复制 API 示例</button>
+            <button class="btn sm" id="exportBtn" type="button">导出配置</button>
+            <button class="btn sm" id="importBtn" type="button">导入配置</button>
+            <input type="file" id="importFile" accept="application/json,.json" hidden>
+          </div>
+          <span class="muted">Ctrl + Enter 运行</span>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="hOut" id="outCard">
+      <div class="card-head"><h2 id="hOut">判断结果</h2><span class="muted" id="outModel"></span></div>
+      <div id="output" aria-live="polite">
+        <div class="result-empty"><b>一个问题进去，一个判断出来</b>Jev 不写长文，只返回类型化答案和概率。点“运行 Jev”看结果。</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+const PRESETS = [
+  { id: 'ticket', name: '🎫 工单路由', state: '你好，我这个月被扣了两次会员费，已经三天了还没人回复！今天之内不处理我就去投诉。订单号 A-20931。',
+    questions: [
+      { id: 'route', type: 'choice', instructions: '这张工单应该转给哪个团队？', criteria: { billing: '扣费、退款、发票、支付问题', technical: '功能故障、报错、无法使用', account: '登录、密码、账号资料修改' } },
+      { id: 'urgent_today', type: 'noul', instructions: '这条消息描述的问题需要今天内处理吗？' },
+      { id: 'frustration', type: 'score', instructions: '用户的情绪有多激动？', criteria: ['平静，只是描述情况', '有些不满，但语气还算礼貌', '非常愤怒，明确表示要投诉或流失'] },
+    ] },
+  { id: 'review', name: '⭐ 评论分析', state: '耳机音质确实不错，低音很足。但是戴一个小时耳朵就疼，而且充电盒的盖子用了两周就松了。客服态度倒是挺好的。',
+    questions: [
+      { id: 'sentiment', type: 'choice', instructions: '这条评论整体的情感倾向是什么？', criteria: { positive: '以满意为主', mixed: '优缺点都有，态度复杂', negative: '以不满为主' } },
+      { id: 'quality_issue', type: 'noul', instructions: '评论中是否提到了产品质量或耐用性问题？' },
+      { id: 'mentions_service', type: 'noul', instructions: '评论中是否评价了客服？' },
+      { id: 'recommend', type: 'score', instructions: '作者向朋友推荐这款产品的可能性有多大？', criteria: ['基本不会推荐', '可能会推荐但会提醒缺点', '会积极推荐'] },
+    ] },
+  { id: 'news', name: '📰 新闻分类', state: 'Anthropic announced a new Claude model family with improved coding performance and a larger context window, available today through the API and major cloud providers.',
+    questions: [
+      { id: 'topic', type: 'choice', instructions: 'Which section does this news belong to?', criteria: { ai: 'Artificial intelligence and machine learning', finance: 'Markets, earnings, and economy', policy: 'Government, regulation, and law', consumer: 'Consumer gadgets and apps' } },
+      { id: 'is_launch', type: 'noul', instructions: 'Does this news announce a product that is available now?' },
+      { id: 'dev_relevance', type: 'score', instructions: 'How relevant is this to software developers?', criteria: ['Not relevant to developers', 'Somewhat relevant', 'Directly changes how developers build'] },
+    ] },
+  { id: 'tool', name: '🧭 Agent 工具选择', state: { user_request: '帮我查一下明天上海的天气，如果下雨就提醒我带伞', available_tools: ['web_search', 'weather_api', 'calendar', 'reminder'] },
+    questions: [
+      { id: 'first_tool', type: 'choice', instructions: '根据 `user_request`，第一步应该调用 `available_tools` 中的哪个工具？', criteria: { web_search: '通用网页搜索', weather_api: '查询指定城市和日期的天气', calendar: '查看或创建日程', reminder: '设置提醒' } },
+      { id: 'needs_followup', type: 'noul', instructions: '完成这个请求是否需要根据第一步的结果再调用另一个工具？' },
+    ] },
+];
+const MAX_Q = 8, MAX_CHARS = 8000;
+const TYPE_LABEL = { noul: 'Yes/No', choice: 'Choice', score: 'Score' };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const pct = v => `${Math.round((v || 0) * 100)}%`;
+let questions = [], activePreset = null, config = null, busy = false;
+function fromApi(id, q) {
+  const base = { id, type: q.type, instructions: typeof q.instructions === 'string' ? q.instructions : JSON.stringify(q.instructions) };
+  const c = q.criteria;
+  if (q.type === 'choice') base.options = Object.entries(c || {}).map(([key, desc]) => ({ key, desc: typeof desc === 'string' ? desc : JSON.stringify(desc) }));
+  else if (q.type === 'score') base.levels = (Array.isArray(c) ? c : []).map(l => typeof l === 'string' ? l : JSON.stringify(l));
+  else { base.yes = c?.true || ''; base.no = c?.false || ''; }
+  return base;
+}
+function toApi(q) {
+  const out = { type: q.type, instructions: q.instructions.trim() };
+  if (q.type === 'choice') out.criteria = Object.fromEntries(q.options.filter(o => o.key.trim()).map(o => [o.key.trim(), o.desc.trim() || o.key.trim()]));
+  else if (q.type === 'score') out.criteria = q.levels.map(l => l.trim()).filter(Boolean);
+  else if (q.yes.trim() || q.no.trim()) out.criteria = { true: q.yes.trim() || 'Yes', false: q.no.trim() || 'No' };
+  return out;
+}
+function blank(type) {
+  let n = 1, id;
+  do { id = `${type}_${n++}`; } while (questions.some(q => q.id === id));
+  if (type === 'choice') return { id, type, instructions: '', options: [{ key: 'option_a', desc: '' }, { key: 'option_b', desc: '' }] };
+  if (type === 'score') return { id, type, instructions: '', levels: ['低', '中', '高'] };
+  return { id, type, instructions: '', yes: '', no: '' };
+}
+
+function renderQuestions() {
+  $('qCount').textContent = `${questions.length} / ${MAX_Q}`;
+  $('qEmpty').hidden = questions.length > 0;
+  document.querySelectorAll('[data-add]').forEach(b => { b.disabled = questions.length >= MAX_Q; });
+  $('questions').innerHTML = questions.map((q, qi) => {
+    let body = '';
+    if (q.type === 'choice') {
+      body = `<label>选项（键名 + 说明，至少 2 个）</label>` + q.options.map((o, oi) => `<div class="opt">
+        <input type="text" data-qi="${qi}" data-oi="${oi}" data-f="key" value="${esc(o.key)}" aria-label="选项 ${oi + 1} 键名" placeholder="键名">
+        <input type="text" data-qi="${qi}" data-oi="${oi}" data-f="desc" value="${esc(o.desc)}" aria-label="选项 ${oi + 1} 说明" placeholder="这个选项代表什么">
+        <button class="btn sm danger" type="button" data-act="delopt" data-qi="${qi}" data-oi="${oi}" aria-label="删除选项 ${oi + 1}" ${q.options.length <= 2 ? 'disabled' : ''}>✕</button></div>`).join('') +
+        `<button class="btn sm" type="button" data-act="addopt" data-qi="${qi}">+ 选项</button>`;
+    } else if (q.type === 'score') {
+      body = `<label>等级（从低到高，2–10 级）</label>` + q.levels.map((l, li) => `<div class="opt level">
+        <span class="lv">${li}</span>
+        <input type="text" data-qi="${qi}" data-oi="${li}" data-f="level" value="${esc(l)}" aria-label="等级 ${li} 描述">
+        <button class="btn sm danger" type="button" data-act="delopt" data-qi="${qi}" data-oi="${li}" aria-label="删除等级 ${li}" ${q.levels.length <= 2 ? 'disabled' : ''}>✕</button></div>`).join('') +
+        `<button class="btn sm" type="button" data-act="addopt" data-qi="${qi}" ${q.levels.length >= 10 ? 'disabled' : ''}>+ 等级</button>`;
+    } else {
+      body = `<details${q.yes || q.no ? ' open' : ''}><summary>可选：补充 Yes / No 的判定标准</summary>
+        <label for="y${qi}">什么情况算 Yes</label><input type="text" id="y${qi}" data-qi="${qi}" data-f="yes" value="${esc(q.yes)}">
+        <label for="n${qi}">什么情况算 No</label><input type="text" id="n${qi}" data-qi="${qi}" data-f="no" value="${esc(q.no)}"></details>`;
+    }
+    return `<div class="q q-${q.type}">
+      <div class="q-top"><span class="tag">${TYPE_LABEL[q.type]}</span>
+        <input type="text" data-qi="${qi}" data-f="id" value="${esc(q.id)}" aria-label="问题 ID" maxlength="64">
+        <button class="btn sm" type="button" data-act="up" data-qi="${qi}" aria-label="上移" ${qi === 0 ? 'disabled' : ''}>↑</button>
+        <button class="btn sm danger" type="button" data-act="del" data-qi="${qi}" aria-label="删除问题 ${esc(q.id)}">删除</button></div>
+      <label for="i${qi}">问题（instructions）</label>
+      <textarea id="i${qi}" data-qi="${qi}" data-f="instructions" placeholder="想让 Jev 判断什么？">${esc(q.instructions)}</textarea>
+      ${body}</div>`;
+  }).join('');
+}
+
+$('questions').addEventListener('input', e => {
+  const t = e.target, qi = t.dataset.qi, f = t.dataset.f;
+  if (qi === undefined || !f) return;
+  const q = questions[qi], oi = Number(t.dataset.oi);
+  if (f === 'key' || f === 'desc') q.options[oi][f] = t.value;
+  else if (f === 'level') q.levels[oi] = t.value;
+  else q[f] = t.value;
+  markCustom();
+});
+$('questions').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const qi = Number(b.dataset.qi), oi = Number(b.dataset.oi), q = questions[qi];
+  const list = q.type === 'choice' ? q.options : q.levels;
+  if (b.dataset.act === 'del') questions.splice(qi, 1);
+  else if (b.dataset.act === 'up') [questions[qi - 1], questions[qi]] = [questions[qi], questions[qi - 1]];
+  else if (b.dataset.act === 'addopt') list.push(q.type === 'choice' ? { key: `option_${String.fromCharCode(97 + list.length)}`, desc: '' } : '');
+  else if (b.dataset.act === 'delopt') list.splice(oi, 1);
+  markCustom();
+  renderQuestions();
+});
+document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => {
+  if (questions.length >= MAX_Q) return;
+  questions.push(blank(b.dataset.add));
+  markCustom();
+  renderQuestions();
+  $(`i${questions.length - 1}`).focus();
+}));
+function renderPresets() {
+  $('presets').innerHTML = PRESETS.map(p => `<button class="btn sm" type="button" data-preset="${p.id}" aria-pressed="${p.id === activePreset}">${p.name}</button>`).join('');
+}
+function loadPreset(id) {
+  const p = PRESETS.find(x => x.id === id) || PRESETS[0];
+  activePreset = p.id;
+  const isObj = typeof p.state !== 'string';
+  $('stateJson').checked = isObj;
+  $('stateInput').value = isObj ? JSON.stringify(p.state, null, 2) : p.state;
+  questions = p.questions.map(q => fromApi(q.id, q));
+  syncState();
+  renderPresets();
+  renderQuestions();
+}
+function markCustom() {
+  if (activePreset === null) return;
+  activePreset = null;
+  renderPresets();
+}
+function syncState() {
+  const v = $('stateInput').value;
+  $('charCount').textContent = `${v.length} / ${MAX_CHARS}`;
+  $('stateInput').classList.toggle('mono', $('stateJson').checked);
+}
+$('presets').addEventListener('click', e => { const b = e.target.closest('[data-preset]'); if (b) loadPreset(b.dataset.preset); });
+$('stateInput').addEventListener('input', () => { syncState(); markCustom(); });
+$('stateJson').addEventListener('change', () => { syncState(); markCustom(); });
+$('resetBtn').addEventListener('click', () => loadPreset(PRESETS[0].id));
+
+function buildRequest() {
+  const raw = $('stateInput').value.trim();
+  if (!raw) throw new Error('请先填写要判断的文本（state）');
+  let state = raw;
+  if ($('stateJson').checked) {
+    try { state = JSON.parse(raw); } catch { throw new Error('state 不是合法 JSON，请检查格式或取消“按 JSON 解析”'); }
+  }
+  if (!questions.length) throw new Error('至少添加一个问题');
+  const ids = new Set(), out = {};
+  for (const q of questions) {
+    const id = q.id.trim();
+    if (!/^[A-Za-z0-9_-]{1,64}$/.test(id)) throw new Error(`问题 ID「${id || '(空)'}」只能用字母、数字、下划线和连字符`);
+    if (ids.has(id)) throw new Error(`问题 ID「${id}」重复了`);
+    ids.add(id);
+    if (!q.instructions.trim()) throw new Error(`问题「${id}」还没写 instructions`);
+    const api = toApi(q);
+    if (q.type === 'choice') {
+      const keys = q.options.map(o => o.key.trim()).filter(Boolean);
+      if (keys.length < 2) throw new Error(`问题「${id}」至少需要 2 个选项`);
+      if (new Set(keys).size !== keys.length) throw new Error(`问题「${id}」的选项键名重复了`);
+    }
+    if (q.type === 'score' && api.criteria.length < 2) throw new Error(`问题「${id}」至少需要 2 个等级`);
+    out[id] = api;
+  }
+  return { state, model: $('modelSel').value, questions: out };
+}
+
+async function callApi(path, body) {
+  let res;
+  try {
+    res = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  } catch {
+    throw new Error('连不上本地服务。请用 python playground_server.py 启动，再打开 http://127.0.0.1:8787/playground.html');
+  }
+  let data = null;
+  try { data = await res.json(); } catch {}
+  if (!res.ok) {
+    if (res.status === 404 || res.status === 405 || res.status === 501) throw new Error('当前页面不是由 playground_server.py 提供的，无法调用接口。请用 python playground_server.py 启动');
+    const detail = data?.detail ? `\n${typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)}` : '';
+    throw new Error((data?.error || `HTTP ${res.status}`) + detail);
+  }
+  return data;
+}
+
+async function run() {
+  if (busy) return;
+  let req;
+  try { req = buildRequest(); } catch (err) { return showError(err.message); }
+  const wantLlm = $('compareLlm').checked;
+  busy = true;
+  $('runBtn').disabled = true;
+  $('runBtn').innerHTML = '<span class="spinner" aria-hidden="true"></span>运行中…';
+  $('output').innerHTML = '<div class="result-empty"><b>Jev 正在判断…</b>通常一两秒内返回。</div>';
+  $('outModel').textContent = '';
+  const [jev, llm] = await Promise.allSettled([
+    callApi('/api/jev', req),
+    wantLlm ? callApi('/api/llm', req) : Promise.resolve(null),
+  ]);
+  busy = false;
+  $('runBtn').disabled = false;
+  $('runBtn').textContent = '运行 Jev';
+  renderResult(req, jev, llm);
+}
+$('runBtn').addEventListener('click', run);
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); } });
+
+function showError(msg) {
+  $('output').innerHTML = `<div class="error" role="alert">${esc(msg)}</div>`;
+  $('outModel').textContent = '';
+}
+const bars = rows => {
+  const max = Math.max(...rows.map(r => r.p));
+  return `<div class="bars">${rows.map(r => `<div class="bar${r.p === max ? ' top' : ''}">
+    <span class="name" title="${esc(r.name)}">${esc(r.name)}</span>
+    <span class="track"><span class="fill" style="width:${Math.round(r.p * 100)}%"></span></span>
+    <span class="pct">${pct(r.p)}</span></div>`).join('')}</div>`;
+};
+function jevVerdict(q, a) {
+  if (q.type === 'noul') return a.noul >= 0.5 ? 'yes' : 'no';
+  if (q.type === 'choice') return a.choice;
+  return String(Math.round(a.score));
+}
+function llmVerdict(q, v) {
+  if (v === undefined || v === null) return null;
+  if (q.type === 'noul') {
+    const s = String(v).trim().toLowerCase();
+    return ['yes', 'true', '是', 'y', '1'].includes(s) ? 'yes' : ['no', 'false', '否', 'n', '0'].includes(s) ? 'no' : s;
+  }
+  if (q.type === 'score') { const n = Number(v); return Number.isFinite(n) ? String(Math.round(n)) : String(v); }
+  return String(v).trim();
+}
+
+function renderAnswer(id, q, a, llm) {
+  let head = '', detail = '';
+  if (q.type === 'noul') {
+    const yes = a.noul ?? 0;
+    head = `<span class="verdict">${yes >= 0.5 ? 'Yes' : 'No'}</span>`;
+    detail = bars([{ name: 'Yes', p: yes }, { name: 'No', p: 1 - yes }]);
+  } else if (q.type === 'choice') {
+    head = `<span class="verdict">${esc(a.choice ?? '-')}</span>`;
+    const desc = Object.fromEntries(q.options.map(o => [o.key.trim(), o.desc.trim()]));
+    detail = bars(Object.entries(a.probabilities || {}).sort((x, y) => y[1] - x[1])
+      .map(([k, p]) => ({ name: desc[k] ? `${k} · ${desc[k]}` : k, p })));
+  } else {
+    const levels = Object.keys(a.legend || {}).length;
+    head = `<span class="verdict">${Number(a.score ?? 0).toFixed(2)}</span> <span class="conf">/ ${Math.max(levels - 1, 0)}</span>`;
+    detail = bars(Object.entries(a.probabilities || {}).sort((x, y) => Number(x[0]) - Number(y[0]))
+      .map(([k, p]) => ({ name: `${k} · ${typeof a.legend?.[k] === 'string' ? a.legend[k] : JSON.stringify(a.legend?.[k] ?? '')}`, p })));
+  }
+  const conf = typeof a.confidence === 'number' ? `置信度 ${pct(a.confidence)}` : '';
+  let llmHtml = '';
+  if (llm) {
+    const entry = llm[id];
+    const answer = entry && typeof entry === 'object' ? entry.answer : entry;
+    const lv = llmVerdict(q, answer);
+    if (lv === null) llmHtml = `<div class="llm">DeepSeek：<span class="muted">没有返回这个问题的答案</span></div>`;
+    else {
+      const same = lv === jevVerdict(q, a);
+      llmHtml = `<div class="llm">DeepSeek：<b>${esc(lv)}</b> <span class="match ${same ? 'yes' : 'no-m'}">${same ? '✓ 一致' : '✗ 不一致'}</span>
+        ${entry?.reason ? `<div class="muted">${esc(entry.reason)}</div>` : ''}</div>`;
+    }
+  }
+  return `<div class="ans q-${q.type}">
+    <div class="ans-head"><span><span class="tag">${TYPE_LABEL[q.type]}</span> <span class="qid">${esc(id)}</span></span><span>${head} <span class="conf">${conf}</span></span></div>
+    <p class="instr">${esc(q.instructions)}</p>${detail}${llmHtml}</div>`;
+}
+
+function renderResult(req, jev, llm) {
+  let html = '';
+  if (jev.status === 'rejected') html += `<div class="error" role="alert">Jev：${esc(jev.reason.message)}</div>`;
+  const llmOk = llm.status === 'fulfilled' && llm.value;
+  if (llm.status === 'rejected') html += `<div class="error" role="alert">DeepSeek：${esc(llm.reason.message)}</div>`;
+  const llmAnswers = llmOk && llm.value.answers && typeof llm.value.answers === 'object' ? llm.value.answers : null;
+  if (llmOk && !llmAnswers) html += `<div class="error">DeepSeek 返回的不是合法 JSON：\n${esc(llm.value.text || '')}</div>`;
+
+  if (jev.status === 'fulfilled') {
+    const r = jev.value;
+    $('outModel').textContent = r.model || '';
+    const m = [[`${r.latency_ms ?? '-'} ms`, 'Jev 耗时'], [r.usage?.input_tokens ?? '-', '输入 token'], [Object.keys(r.answers || {}).length, '个答案']];
+    if (llmOk) m.push([`${llm.value.latency_ms ?? '-'} ms`, `DeepSeek 耗时`], [llm.value.usage?.total_tokens ?? '-', 'DeepSeek token']);
+    html += `<div class="metrics">${m.map(([v, k]) => `<div class="metric"><b>${esc(v)}</b><span>${esc(k)}</span></div>`).join('')}</div>`;
+    html += questions.map(q => {
+      const id = q.id.trim(), a = r.answers?.[id];
+      return a ? renderAnswer(id, q, a, llmAnswers) : `<div class="error">问题「${esc(id)}」没有返回答案</div>`;
+    }).join('');
+    html += `<details><summary>查看原始 JSON</summary><pre class="code">${esc(JSON.stringify({ request: req, jev: r, deepseek: llmOk ? llm.value : undefined }, null, 2))}</pre></details>`;
+  }
+  $('output').innerHTML = html;
+}
+let toastTimer;
+function toast(msg) {
+  $('toast').textContent = msg;
+  $('toast').hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { $('toast').hidden = true; }, 2200);
+}
+async function copyText(text, okMsg) {
+  try { await navigator.clipboard.writeText(text); toast(okMsg); }
+  catch { toast('复制失败，浏览器不允许访问剪贴板'); }
+}
+
+$('copyApi').addEventListener('click', () => {
+  let req;
+  try { req = buildRequest(); } catch (err) { return toast(err.message); }
+  const url = config?.jev?.endpoint || 'https://api.typesafe.ai/v1/systemone';
+  const body = JSON.stringify(req, null, 2).replace(/'/g, `'\\''`);
+  copyText(`curl ${url} \\\n  -H "Authorization: Bearer $TypeSafe_Key" \\\n  -H "Content-Type: application/json" \\\n  -d '${body}'`, '已复制 curl 示例（Key 用环境变量引用）');
+});
+$('exportBtn').addEventListener('click', () => {
+  let req;
+  try { req = buildRequest(); } catch (err) { return toast(err.message); }
+  const blob = new Blob([JSON.stringify(req, null, 2)], { type: 'application/json' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'atlas-playground.json' });
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+$('importBtn').addEventListener('click', () => $('importFile').click());
+$('importFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || typeof data.questions !== 'object' || data.state === undefined) throw new Error();
+    const list = Object.entries(data.questions).filter(([, q]) => q && TYPE_LABEL[q.type]).slice(0, MAX_Q);
+    if (!list.length) throw new Error();
+    const isObj = typeof data.state !== 'string';
+    $('stateJson').checked = isObj;
+    $('stateInput').value = isObj ? JSON.stringify(data.state, null, 2) : data.state;
+    if ([...$('modelSel').options].some(o => o.value === data.model)) $('modelSel').value = data.model;
+    questions = list.map(([id, q]) => fromApi(id, q));
+    activePreset = null;
+    syncState(); renderPresets(); renderQuestions();
+    toast(`已导入 ${questions.length} 个问题`);
+  } catch { toast('导入失败：文件需要包含 state 和 questions'); }
+});
+
+function setPill(el, name, ok, extra) {
+  el.className = `pill ${ok ? 'on' : 'off'}`;
+  el.innerHTML = `<i></i>${name}：${ok ? '已配置' : '未配置'}${extra ? ` · ${esc(extra)}` : ''}`;
+}
+async function loadConfig() {
+  try {
+    const res = await fetch('/api/config', { cache: 'no-store' });
+    if (!res.ok) throw new Error();
+    config = await res.json();
+  } catch {
+    config = null;
+  }
+  if (!config) {
+    $('pillJev').className = $('pillLlm').className = 'pill off';
+    $('pillJev').innerHTML = '<i></i>本地服务未启动';
+    $('pillLlm').innerHTML = '<i></i>无法读取环境变量';
+    $('setupTitle').textContent = '需要通过本地服务打开';
+    $('setupDesc').textContent = '这个页面要配合 playground_server.py 使用：服务从本机环境变量读取 Key 并代为请求，Key 不会进入浏览器。配置环境变量后启动：';
+    $('setupNotice').hidden = false;
+    return;
+  }
+  setPill($('pillJev'), 'Jev', config.jev.configured, new URL(config.jev.endpoint).host);
+  setPill($('pillLlm'), 'DeepSeek', config.llm.configured, config.llm.model);
+  $('compareLlm').disabled = !config.llm.configured;
+  $('compareLlm').checked = config.llm.configured;
+  if (!config.jev.configured || !config.llm.configured) {
+    const miss = [!config.jev.configured && 'TypeSafe_Key', !config.llm.configured && 'DEEPSEEK_API_KEY'].filter(Boolean).join('、');
+    $('setupTitle').textContent = `缺少环境变量：${miss}`;
+    $('setupNotice').hidden = false;
+  }
+}
+
+const themeBtn = $('themeBtn');
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('jev-theme', theme);
+}
+applyTheme(localStorage.getItem('jev-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+themeBtn.addEventListener('click', () => applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+loadPreset(PRESETS[0].id);
+loadConfig();
+})();
+</script>
+</body>
+</html>
