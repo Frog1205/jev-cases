@@ -100,6 +100,7 @@
   .pg-steps p, .pg-faq p { font-size: 14px; margin-top: 6px; }
   .pg-steps a, .pg-faq a { color: var(--accent); font-weight: 600; }
   .pg-steps pre { margin-top: 6px; padding: 10px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); font-size: 13px; overflow-x: auto; white-space: pre; }
+  .pg-shot { margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; }
   .pg-steps code, .pg-faq code { font-size: 13px; padding: 0 4px; border-radius: 4px; background: var(--bg); }
   .pg-faq { text-align: left; margin-top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
   .pg-faq summary { cursor: pointer; font-weight: 600; }
@@ -369,7 +370,10 @@
         <p>Jev Key（必填）：获取方式见使用手册 <a href="#m-api" data-goto="m-api">方法一：API →</a>，官方控制台和第三方平台都可以。</p>
         <p>DeepSeek Key（可选，用于对比）：在 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener noreferrer">DeepSeek 开放平台</a> 创建。不填也能用，只是没有对比结果。</p></li>
       <li><b>下载两个文件，放进同一个文件夹</b>
-        <p>用上面的按钮下载 <code>playground_server.py</code> 和 <code>playground.html</code>，例如都放到 <code>D:\jev-playground</code>。文件名不要改。</p></li>
+        <p>用上面的按钮下载 <code>playground_server.py</code> 和 <code>playground.html</code>，例如都放到 <code>D:\jev-playground</code>。文件名不要改。</p>
+        <button class="shot pg-shot" type="button" aria-label="放大查看：D:\jev-playground 文件夹里放着 playground 和 playground_server 两个文件">
+          <img src="img/playground/pg1.webp" width="849" height="300" loading="lazy" alt="D:\jev-playground 文件夹里放着 playground 和 playground_server 两个文件">
+        </button></li>
       <li><b>设置环境变量</b>
         <p>Windows（在 CMD 或 PowerShell 里运行，设置完要<strong>关掉终端重新打开</strong>才生效）：</p>
         <pre>setx TypeSafe_Key "你的 Jev API Key"
@@ -382,9 +386,20 @@ export DEEPSEEK_API_KEY="你的 DeepSeek API Key"</pre>
         <p>在新终端里进入这个文件夹，然后运行：</p>
         <pre>cd D:\jev-playground
 python playground_server.py</pre>
-        <p>macOS / Linux 如果提示找不到 <code>python</code>，改用 <code>python3</code>。终端窗口保持打开，关掉就停止服务。</p></li>
+        <p>启动后终端会打印访问地址，并显示 Jev 和 DeepSeek 是否“已配置”。显示“未配置”说明环境变量没生效，见下方常见问题。终端窗口保持打开，关掉就停止服务。macOS / Linux 如果提示找不到 <code>python</code>，改用 <code>python3</code>。</p>
+        <button class="shot pg-shot" type="button" aria-label="放大查看：终端显示 Atlas Playground 地址，Jev 和 DeepSeek 均为已配置">
+          <img src="img/playground/pg2.webp" width="1029" height="279" loading="lazy" alt="终端显示 Atlas Playground 地址，Jev 和 DeepSeek 均为已配置">
+        </button></li>
       <li><b>打开浏览器</b>
-        <p>访问 <code>http://127.0.0.1:8787/playground.html</code>。顶部两个状态显示“已配置”就可以开始用了。</p></li>
+        <p>访问 <code>http://127.0.0.1:8787/playground.html</code>。顶部两个状态显示“已配置”就可以开始用了。</p>
+        <button class="shot pg-shot" type="button" aria-label="放大查看：浏览器打开 127.0.0.1:8787/playground.html，顶部 Jev 和 DeepSeek 显示已配置">
+          <img src="img/playground/pg3.webp" width="1400" height="800" loading="lazy" alt="浏览器打开 127.0.0.1:8787/playground.html，顶部 Jev 和 DeepSeek 显示已配置">
+        </button></li>
+      <li><b>调整输入内容，点击运行 Jev</b>
+        <p>先点一个示例（工单路由、评论分析等），或者直接改“要判断的文本”和下面的问题。然后在底部“运行”区点 <b>运行 Jev</b>（也可以按 <code>Ctrl + Enter</code>），右侧会显示判断结果、概率和耗时。勾选“同时问 DeepSeek”可以对比两边的答案。</p>
+        <button class="shot pg-shot" type="button" aria-label="放大查看：Playground 底部运行区，箭头指向运行 Jev 按钮">
+          <img src="img/playground/pg4.webp" width="1400" height="720" loading="lazy" alt="Playground 底部运行区，箭头指向运行 Jev 按钮">
+        </button></li>
     </ol>
 
     <details class="pg-faq">
@@ -768,7 +783,7 @@ python playground_server.py</pre>
     $('lightbox').hidden = true;
     lastShot?.focus();
   }
-  document.querySelector('.manual-body').addEventListener('click', e => {
+  document.addEventListener('click', e => {
     const shot = e.target.closest('.shot');
     if (!shot) return;
     const img = shot.querySelector('img');
