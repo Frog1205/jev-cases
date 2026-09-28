@@ -213,7 +213,7 @@
 <div class="tab-panel" id="panelManual" role="tabpanel" aria-labelledby="tabBtnManual" hidden>
   <div class="placeholder-panel">
     <div class="ico">📘</div>
-    <h2>手册</h2>
+    <h2>Jev使用教程（5个入口+部分原始案例集）</h2>
     <p>完整使用手册托管在飞书文档。</p>
     <a class="cta" id="manualLink" href="https://cxbbqb45sgq.feishu.cn/wiki/EhaEwCX5rixrDDk5FzUcrNPPn2b?from=from_copylink" target="_blank" rel="noopener noreferrer">前往飞书手册 →</a>
   </div>
@@ -269,7 +269,8 @@
   $('stTotal').textContent = CASES.length;
   $('stCats').textContent = CATS.length;
   $('stAuthors').textContent = new Set(CASES.map(c => c.author.toLowerCase())).size;
-  $('stRange').textContent = `${dates[0].slice(5)} ~ ${dates[dates.length - 1].slice(5)}`;
+  const today = new Date().toISOString().slice(0, 10);
+  $('stRange').textContent = `${dates[0].slice(5)} ~ ${today.slice(5)}`;
 
   // 分布条（按数量降序）
   const sorted = [...CATS].sort((a, b) => counts[b.id] - counts[a.id]);
