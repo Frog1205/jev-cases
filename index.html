@@ -96,6 +96,47 @@
   }
   .placeholder-panel .cta[aria-disabled="true"] { background: var(--line); color: var(--muted); cursor: not-allowed; pointer-events: none; }
 
+  .manual { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 36px; padding: 36px 0 72px; }
+  .manual-toc { position: sticky; top: 16px; align-self: start; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; font-size: 14px; }
+  .manual-toc b { display: block; font-size: 12px; color: var(--muted); letter-spacing: .08em; margin-bottom: 8px; }
+  .manual-toc a { display: block; padding: 6px 10px; border-radius: 8px; text-decoration: none; color: var(--muted); transition: background .2s, color .2s; }
+  .manual-toc a.sub { padding-left: 22px; font-size: 13px; }
+  .manual-toc a:hover, .manual-toc a.on { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .manual-body h2 { font-size: 24px; letter-spacing: -.01em; margin: 8px 0 16px; scroll-margin-top: 20px; }
+  .manual-body h2:not(:first-child) { margin-top: 48px; }
+  .manual-body h3 { font-size: 18px; margin: 32px 0 14px; scroll-margin-top: 20px; display: flex; align-items: center; gap: 10px; }
+  .manual-body h3 .tag { font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .manual-body > p, .manual-body .lead { color: var(--muted); margin-bottom: 14px; }
+  .manual-body .lead a, .step a.url { color: var(--accent); font-weight: 600; word-break: break-all; }
+  .manual-hero { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; margin-bottom: 28px; }
+  .manual-hero h1 { font-size: clamp(22px, 3vw, 30px); letter-spacing: -.02em; }
+  .manual-hero p { color: var(--muted); margin-top: 6px; }
+  .notice { border-left: 4px solid #e5484d; background: color-mix(in srgb, #e5484d 8%, var(--panel)); border-radius: 10px; padding: 12px 16px; margin: 14px 0 18px; font-size: 14px; }
+  .elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; margin: 14px 0 8px; }
+  .element { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; transition: transform .2s, box-shadow .2s, border-color .2s; }
+  .element:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+  .element .n { font-size: 12px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .element h4 { font-size: 16px; margin: 4px 0 6px; font-family: ui-monospace, Consolas, monospace; }
+  .element p { font-size: 14px; color: var(--muted); }
+  .types { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; font-size: 13px; }
+  .types code { font-family: ui-monospace, Consolas, monospace; font-weight: 700; padding: 1px 8px; border-radius: 6px; margin-right: 6px; }
+  .t-choice { color: #3e63dd; background: #3e63dd1f; } .t-noul { color: #30a46c; background: #30a46c1f; } .t-score { color: #d6a100; background: #ffc53d26; }
+  .step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-bottom: 18px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; }
+  .step-no { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: 700; color: #fff; background: var(--accent); }
+  .step-head p { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .step-head .hl { display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 600; color: #30a46c; background: #30a46c1a; padding: 2px 10px; border-radius: 99px; }
+  .shot { display: block; width: 100%; padding: 0; border: 0; border-top: 1px solid var(--line); background: var(--bg); cursor: zoom-in; overflow: hidden; }
+  .shot img { display: block; width: 100%; height: auto; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+  .shot:hover img { transform: scale(1.02); }
+  .shot:focus-visible, .manual-toc a:focus-visible, .step a.url:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .in-view { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  .in-view.shown { opacity: 1; transform: none; }
+  .lightbox { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.82); display: flex; align-items: center; justify-content: center; padding: 24px; cursor: zoom-out; }
+  .lightbox[hidden] { display: none; }
+  .lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.5); animation: pop .3s ease; }
+  .lightbox-close { position: absolute; top: 16px; right: 16px; width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255,255,255,.14); color: #fff; font-size: 18px; cursor: pointer; }
+
   .layout { display: grid; grid-template-columns: 260px 1fr; gap: 28px; padding: 28px 0 60px; }
   aside { position: sticky; top: 16px; align-self: start; }
   .cat-list { list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px; }
@@ -194,7 +235,12 @@
     .cat-list { display: flex; overflow-x: auto; gap: 4px; }
     .cat-btn { white-space: nowrap; width: auto; }
     .cat-btn .num { margin-left: 4px; }
+    .manual { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 24px; }
+    .manual-toc { position: static; display: flex; flex-wrap: wrap; gap: 4px; }
+    .manual-toc b { width: 100%; }
+    .manual-toc a.sub { padding-left: 10px; }
   }
+  @media (prefers-reduced-motion: reduce) { .in-view { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .card:hover { transform: none; }
@@ -224,8 +270,8 @@
     <div class="dist-legend" id="distLegend"></div>
     <div class="tabs" role="tablist" aria-label="主导航">
       <button class="tab-btn" id="tabBtnCases" type="button" role="tab" aria-selected="true" aria-controls="panelCases">案例</button>
-      <button class="tab-btn" id="tabBtnPlayground" type="button" role="tab" aria-selected="false" aria-controls="panelPlayground">动手使用</button>
-      <button class="tab-btn" id="tabBtnManual" type="button" role="tab" aria-selected="false" aria-controls="panelManual">手册</button>
+      <button class="tab-btn" id="tabBtnPlayground" type="button" role="tab" aria-selected="false" aria-controls="panelPlayground">动手</button>
+      <button class="tab-btn" id="tabBtnManual" type="button" role="tab" aria-selected="false" aria-controls="panelManual">使用手册</button>
       <button class="tab-btn" id="tabBtnContact" type="button" role="tab" aria-selected="false" aria-controls="panelContact">联系我</button>
     </div>
   </div>
@@ -263,18 +309,127 @@
 <div class="tab-panel" id="panelPlayground" role="tabpanel" aria-labelledby="tabBtnPlayground" hidden>
   <div class="placeholder-panel">
     <div class="ico">🛝</div>
-    <h2>动手使用</h2>
+    <h2>动手</h2>
     <p>模拟版 Playground 正在制作中，上线后可以在这里直接体验 Jev 的判断能力。</p>
     <span class="cta" aria-disabled="true">即将上线</span>
   </div>
 </div>
 
 <div class="tab-panel" id="panelManual" role="tabpanel" aria-labelledby="tabBtnManual" hidden>
-  <div class="placeholder-panel">
-    <div class="ico">📘</div>
-    <h2>Jev使用教程（5个入口+部分原始案例集）</h2>
-    <p>完整使用手册托管在飞书文档。</p>
-    <a class="cta" id="manualLink" href="https://cxbbqb45sgq.feishu.cn/wiki/EhaEwCX5rixrDDk5FzUcrNPPn2b?from=from_copylink" target="_blank" rel="noopener noreferrer">前往飞书手册 →</a>
+  <div class="wrap manual">
+    <nav class="manual-toc" id="manualToc" aria-label="手册目录">
+      <b>目录</b>
+      <a href="#m-start">一、注册登录和使用</a>
+      <a class="sub" href="#m-elements">Jev 核心元素</a>
+      <a class="sub" href="#m-api">方法一：API</a>
+      <a class="sub" href="#m-playground">方法二：网站体验</a>
+      <a href="#m-cases">二、使用案例参考</a>
+    </nav>
+    <article class="manual-body">
+      <div class="manual-hero in-view">
+        <h1>Jev 使用教程</h1>
+        <p>5 个使用入口 + 3 个案例集，从注册到上手一页看完。</p>
+      </div>
+
+      <h2 id="m-start">一、注册登录和使用</h2>
+      <p class="lead">唯一官方网站：<a href="https://typesafe.ai/" target="_blank" rel="noopener noreferrer">https://typesafe.ai/</a></p>
+      <div class="notice">其他站点都是逆向或者接入官方 API 的方式，使用时注意甄别。</div>
+      <div class="step in-view">
+        <button class="shot" type="button" aria-label="放大查看：TypeSafe 官网首页，右上角 Sign In 登录">
+          <img src="img/manual/step1.webp" width="1400" height="623" loading="lazy" alt="TypeSafe 官网首页，右上角 Sign In 登录">
+        </button>
+      </div>
+
+      <h3 id="m-elements">使用前注意：Jev 核心的几个元素</h3>
+      <div class="elements">
+        <div class="element in-view"><span class="n">01</span><h4>state</h4><p>输入条件，可以是自然语言，但不支持多模态。</p></div>
+        <div class="element in-view"><span class="n">02</span><h4>场景</h4><p>可以单独给出，也可以嵌入到 state 中。</p></div>
+        <div class="element in-view"><span class="n">03</span><h4>输出参数</h4><p>指定输出参数类型：</p>
+          <div class="types">
+            <span><code class="t-choice">choice</code>可以是多个选择</span>
+            <span><code class="t-noul">noul</code>yes/no，可以多个维度</span>
+            <span><code class="t-score">score</code>按业务选维度打分</span>
+          </div>
+        </div>
+      </div>
+      <h3 id="m-api">方法一：API <span class="tag">消耗 token</span></h3>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">1</span><div>
+          <a class="url" href="https://console.typesafe.ai/" target="_blank" rel="noopener noreferrer">https://console.typesafe.ai/</a>
+          <p>TypeSafe 官方控制台</p><span class="hl">注册送 5 美元，约 1.2 亿 token</span>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：TypeSafe 控制台 Billing 页面，显示 5 美元额度">
+          <img src="img/manual/step2.webp" width="1400" height="643" loading="lazy" alt="TypeSafe 控制台 Billing 页面，显示 5 美元额度">
+        </button>
+      </div>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">2</span><div>
+          <a class="url" href="https://jevmodel.org/" target="_blank" rel="noopener noreferrer">https://jevmodel.org/</a>
+          <p>第三方 API 平台</p><span class="hl">注册送 10 万 token</span>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：jevmodel.org 账户控制台，显示余额和 API key">
+          <img src="img/manual/step3.webp" width="1400" height="718" loading="lazy" alt="jevmodel.org 账户控制台，显示余额和 API key">
+        </button>
+      </div>
+
+      <h3 id="m-playground">方法二：网站体验 <span class="tag">Playground</span></h3>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">1</span><div>
+          <a class="url" href="https://console.typesafe.ai/playground" target="_blank" rel="noopener noreferrer">https://console.typesafe.ai/playground</a>
+          <p>官方 Playground，内置 Noul / Choice / Score 示例课程</p>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：TypeSafe 官方 Playground 界面">
+          <img src="img/manual/step4.webp" width="1400" height="626" loading="lazy" alt="TypeSafe 官方 Playground 界面">
+        </button>
+      </div>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">2</span><div>
+          <a class="url" href="https://jevmodel.org/playground/" target="_blank" rel="noopener noreferrer">https://jevmodel.org/playground/</a>
+          <p>除了 Jev 模型，还可以选择开源的 laya 模型</p>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：jevmodel.org Playground，可选择模型并添加问题">
+          <img src="img/manual/step5.webp" width="1400" height="723" loading="lazy" alt="jevmodel.org Playground，可选择模型并添加问题">
+        </button>
+      </div>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">3</span><div>
+          <a class="url" href="https://jevtypesafeai.com/#playground" target="_blank" rel="noopener noreferrer">https://jevtypesafeai.com/#playground</a>
+          <p>免注册直接运行，点击 Run Jev 即可</p>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：jevtypesafeai.com Playground，底部 Run Jev 按钮">
+          <img src="img/manual/step6.webp" width="1400" height="776" loading="lazy" alt="jevtypesafeai.com Playground，底部 Run Jev 按钮">
+        </button>
+      </div>
+
+      <h2 id="m-cases">二、使用案例参考</h2>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">1</span><div>
+          <a class="url" href="https://render.qmuse.pub/p/muse/8079593307628562/index.html" target="_blank" rel="noopener noreferrer">render.qmuse.pub · JEV Case File</a>
+          <p>非官方 Jev 模型案例库，收录 X 上带视频、引用的原帖</p>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：JEV Case File 案例库首页">
+          <img src="img/manual/step7.webp" width="1400" height="640" loading="lazy" alt="JEV Case File 案例库首页">
+        </button>
+      </div>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">2</span><div>
+          <a class="url" href="https://jev101.com/zh/cases/index.html" target="_blank" rel="noopener noreferrer">https://jev101.com/zh/cases/</a>
+          <p>Jev 精选案例，207 条，本站案例数据来源</p>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：jev101 Jev 精选案例页面">
+          <img src="img/manual/step8.webp" width="1400" height="596" loading="lazy" alt="jev101 Jev 精选案例页面">
+        </button>
+      </div>
+      <div class="step in-view">
+        <div class="step-head"><span class="step-no">3</span><div>
+          <a class="url" href="https://jevai.dev/zh-Hans/user-cases/" target="_blank" rel="noopener noreferrer">https://jevai.dev/zh-Hans/user-cases/</a>
+          <p>来自 X 和 YouTube 的开发者案例精选</p>
+        </div></div>
+        <button class="shot" type="button" aria-label="放大查看：Jev AI Dev 社区案例精选页面">
+          <img src="img/manual/step9.webp" width="1400" height="682" loading="lazy" alt="Jev AI Dev 社区案例精选页面">
+        </button>
+      </div>
+    </article>
   </div>
 </div>
 
@@ -303,6 +458,11 @@
       <a class="modal-link" id="modalLink" target="_blank" rel="noopener noreferrer">查看原帖 →</a>
     </div>
   </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="截图预览" hidden>
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭预览">✕</button>
+  <img id="lightboxImg" alt="">
 </div>
 
 <script src="data.js"></script>
@@ -453,6 +613,42 @@
     });
   }
   tabs.forEach(([btnId, pId]) => $(btnId).addEventListener('click', () => selectTab(pId)));
+
+  const revealIO = new IntersectionObserver(entries => entries.forEach(en => {
+    if (en.isIntersecting) { en.target.classList.add('shown'); revealIO.unobserve(en.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.in-view').forEach(el => revealIO.observe(el));
+
+  const tocLinks = [...document.querySelectorAll('#manualToc a')];
+  const tocTargets = tocLinks.map(a => document.querySelector(a.hash));
+  function syncToc() {
+    if ($('panelManual').hidden) return;
+    const line = innerHeight * 0.3;
+    let idx = 0;
+    tocTargets.forEach((el, i) => { if (el.getBoundingClientRect().top <= line) idx = i; });
+    tocLinks.forEach((a, i) => a.classList.toggle('on', i === idx));
+  }
+  addEventListener('scroll', syncToc, { passive: true });
+  $('tabBtnManual').addEventListener('click', () => requestAnimationFrame(syncToc));
+
+  let lastShot = null;
+  function closeLightbox() {
+    if ($('lightbox').hidden) return;
+    $('lightbox').hidden = true;
+    lastShot?.focus();
+  }
+  document.querySelector('.manual-body').addEventListener('click', e => {
+    const shot = e.target.closest('.shot');
+    if (!shot) return;
+    const img = shot.querySelector('img');
+    lastShot = shot;
+    $('lightboxImg').src = img.src;
+    $('lightboxImg').alt = img.alt;
+    $('lightbox').hidden = false;
+    $('lightboxClose').focus();
+  });
+  $('lightbox').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
   const themeBtn = $('themeBtn');
   function applyTheme(theme) {
