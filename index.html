@@ -94,9 +94,11 @@
   .placeholder-panel .cta.ghost { background: var(--panel); color: var(--accent); border: 1px solid var(--accent); }
   #panelPlayground .placeholder-panel { max-width: 720px; }
   .pg-steps { list-style: none; counter-reset: pg; text-align: left; margin-top: 32px; display: grid; gap: 12px; }
-  .pg-steps li { counter-increment: pg; position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px 14px 56px; }
-  .pg-steps li::before { content: counter(pg); position: absolute; left: 16px; top: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  .pg-steps b { font-size: 15px; }
+  .pg-sub { margin: 6px 0 0 20px; font-size: 14px; }
+  .pg-sub li { margin-top: 4px; }
+  .pg-steps > li { counter-increment: pg; position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px 14px 56px; }
+  .pg-steps > li::before { content: counter(pg); position: absolute; left: 16px; top: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pg-steps > li > b { font-size: 15px; }
   .pg-steps p, .pg-faq p { font-size: 14px; margin-top: 6px; }
   .pg-steps a, .pg-faq a { color: var(--accent); font-weight: 600; }
   .pg-steps pre { margin-top: 6px; padding: 10px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); font-size: 13px; overflow-x: auto; white-space: pre; }
@@ -375,9 +377,21 @@
           <img src="img/playground/pg1.webp" width="849" height="300" loading="lazy" alt="D:\jev-playground 文件夹里放着 playground 和 playground_server 两个文件">
         </button></li>
       <li><b>设置环境变量</b>
-        <p>Windows（在 CMD 或 PowerShell 里运行，设置完要<strong>关掉终端重新打开</strong>才生效）：</p>
+        <p>Windows 方式一：命令行（在 CMD 或 PowerShell 里运行，设置完要<strong>关掉终端重新打开</strong>才生效）：</p>
         <pre>setx TypeSafe_Key "你的 Jev API Key"
 setx DEEPSEEK_API_KEY "你的 DeepSeek API Key"</pre>
+        <p>Windows 方式二：手动设置（不想用命令行时）：</p>
+        <ol class="pg-sub">
+          <li>按 <code>Win + R</code>，输入 <code>sysdm.cpl</code> 回车，打开“系统属性”（也可以在开始菜单搜“编辑系统环境变量”）。</li>
+          <li>切到 <b>高级</b> 选项卡，点右下角的 <b>环境变量</b>。</li>
+          <li>在上半部分“用户变量”点 <b>新建</b>：变量名填 <code>TypeSafe_Key</code>，变量值填你的 Jev API Key，确定。</li>
+          <li>再新建一个：变量名 <code>DEEPSEEK_API_KEY</code>，变量值填 DeepSeek API Key。</li>
+          <li>一路点 <b>确定</b> 关闭所有窗口，然后<strong>重新打开</strong>终端再启动服务。</li>
+        </ol>
+        <p>变量名要一字不差，大小写也要一致。值前后不要带空格或引号。</p>
+        <button class="shot pg-shot" type="button" aria-label="放大查看：系统属性的高级选项卡，打开环境变量窗口，用户变量里新建 TypeSafe_Key">
+          <img src="img/playground/pg-env.webp" width="1231" height="754" loading="lazy" alt="系统属性的高级选项卡，打开环境变量窗口，用户变量里新建 TypeSafe_Key">
+        </button>
         <p>macOS / Linux（只对当前终端生效）：</p>
         <pre>export TypeSafe_Key="你的 Jev API Key"
 export DEEPSEEK_API_KEY="你的 DeepSeek API Key"</pre>
