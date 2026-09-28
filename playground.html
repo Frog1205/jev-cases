@@ -28,6 +28,10 @@
   .notice code, .cmd { font-family:ui-monospace,Consolas,monospace; font-size:13px; background:color-mix(in srgb,var(--text) 8%,transparent); padding:1px 6px; border-radius:6px; }
   .notice pre { margin-top:8px; white-space:pre-wrap; }
   .notice[hidden] { display:none; }
+  .dl-row[hidden] { display:none; }
+  .dl-row { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
+  .dl-row a { text-decoration:none; color:inherit; }
+  .dl-row a.primary { color:#fff; }
   .layout { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:20px; padding:24px 0 60px; align-items:start; }
   .layout > * { min-width:0; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-bottom:16px; }
@@ -121,6 +125,12 @@
   <div class="notice" id="setupNotice" hidden>
     <b id="setupTitle">需要在本地配置环境变量</b>
     <p id="setupDesc">API Key 和接口地址只从本机环境变量读取，不会出现在网页里。配置后重启本地服务：</p>
+    <div class="dl-row" id="dlRow" hidden>
+      <a class="btn sm primary" href="playground_server.py" download>下载 playground_server.py</a>
+      <a class="btn sm" href="playground.html" download>下载 playground.html</a>
+      <a class="btn sm" href="https://github.com/Frog1205/jev-cases" target="_blank" rel="noopener noreferrer">GitHub 源码</a>
+      <span class="muted">两个文件放在同一个文件夹，需要 Python 3.8+，无需安装依赖</span>
+    </div>
     <pre><span class="cmd">setx TypeSafe_Key "你的 Jev API Key"</span>
 <span class="cmd">setx DEEPSEEK_API_KEY "你的 DeepSeek API Key"</span>
 <span class="cmd">setx TYPESAFE_BASE_URL "https://api.typesafe.ai"</span>   （可选，第三方平台可改成 https://jevmodel.org）
@@ -554,7 +564,8 @@ async function loadConfig() {
     $('pillJev').innerHTML = '<i></i>本地服务未启动';
     $('pillLlm').innerHTML = '<i></i>无法读取环境变量';
     $('setupTitle').textContent = '需要通过本地服务打开';
-    $('setupDesc').textContent = '这个页面要配合 playground_server.py 使用：服务从本机环境变量读取 Key 并代为请求，Key 不会进入浏览器。配置环境变量后启动：';
+    $('setupDesc').textContent = '这个页面要配合 playground_server.py 使用：先下载下面两个文件，服务从本机环境变量读取 Key 并代为请求，Key 不会进入浏览器。配置环境变量后启动：';
+    $('dlRow').hidden = false;
     $('setupNotice').hidden = false;
     return;
   }

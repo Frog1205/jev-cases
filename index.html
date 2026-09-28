@@ -90,6 +90,19 @@
   .placeholder-panel .ico { font-size: 40px; }
   .placeholder-panel h2 { font-size: 20px; margin-top: 12px; }
   .placeholder-panel p { color: var(--muted); margin-top: 8px; }
+  .placeholder-panel .dl-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .placeholder-panel .cta.ghost { background: var(--panel); color: var(--accent); border: 1px solid var(--accent); }
+  #panelPlayground .placeholder-panel { max-width: 720px; }
+  .pg-steps { list-style: none; counter-reset: pg; text-align: left; margin-top: 32px; display: grid; gap: 12px; }
+  .pg-steps li { counter-increment: pg; position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px 14px 56px; }
+  .pg-steps li::before { content: counter(pg); position: absolute; left: 16px; top: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pg-steps b { font-size: 15px; }
+  .pg-steps p, .pg-faq p { font-size: 14px; margin-top: 6px; }
+  .pg-steps a, .pg-faq a { color: var(--accent); font-weight: 600; }
+  .pg-steps pre { margin-top: 6px; padding: 10px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); font-size: 13px; overflow-x: auto; white-space: pre; }
+  .pg-steps code, .pg-faq code { font-size: 13px; padding: 0 4px; border-radius: 4px; background: var(--bg); }
+  .pg-faq { text-align: left; margin-top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+  .pg-faq summary { cursor: pointer; font-weight: 600; }
   .placeholder-panel .cta {
     display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; padding: 10px 20px;
     border-radius: 10px; background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600;
@@ -343,8 +356,43 @@
     <div class="ico">🛝</div>
     <h2>Atlas Playground</h2>
     <p>填一段文本、配几个 Yes/No、Choice、Score 问题，直接看 Jev 返回的判断和概率，还能和 DeepSeek 对比。</p>
-    <p>API Key 只从本机环境变量读取（<code>TypeSafe_Key</code>、<code>DEEPSEEK_API_KEY</code>），需要在本地运行 <code>python playground_server.py</code>。</p>
-    <a class="cta" href="playground.html">打开 Playground →</a>
+    <p>API Key 只保存在你自己电脑的环境变量里，由本地服务代为请求，不会进入浏览器，所以需要在本机运行。</p>
+    <div class="dl-btns">
+      <a class="cta" href="playground_server.py" download="playground_server.py">下载 playground_server.py</a>
+      <a class="cta ghost" href="playground.html" download="playground.html">下载 playground.html</a>
+    </div>
+
+    <ol class="pg-steps">
+      <li><b>安装 Python 3.8 或更高版本</b>
+        <p>从 <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">python.org</a> 下载安装。Windows 安装时勾选 <code>Add python.exe to PATH</code>。在终端输入 <code>python --version</code> 能看到版本号就行，不需要安装其他依赖。</p></li>
+      <li><b>获取 API Key</b>
+        <p>Jev Key（必填）：获取方式见使用手册 <a href="#m-api" data-goto="m-api">方法一：API →</a>，官方控制台和第三方平台都可以。</p>
+        <p>DeepSeek Key（可选，用于对比）：在 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener noreferrer">DeepSeek 开放平台</a> 创建。不填也能用，只是没有对比结果。</p></li>
+      <li><b>下载两个文件，放进同一个文件夹</b>
+        <p>用上面的按钮下载 <code>playground_server.py</code> 和 <code>playground.html</code>，例如都放到 <code>D:\jev-playground</code>。文件名不要改。</p></li>
+      <li><b>设置环境变量</b>
+        <p>Windows（在 CMD 或 PowerShell 里运行，设置完要<strong>关掉终端重新打开</strong>才生效）：</p>
+        <pre>setx TypeSafe_Key "你的 Jev API Key"
+setx DEEPSEEK_API_KEY "你的 DeepSeek API Key"</pre>
+        <p>macOS / Linux（只对当前终端生效）：</p>
+        <pre>export TypeSafe_Key="你的 Jev API Key"
+export DEEPSEEK_API_KEY="你的 DeepSeek API Key"</pre>
+        <p>用第三方平台的 Key 时，再加一行 <code>TYPESAFE_BASE_URL</code>，填成那个平台的 API 地址。</p></li>
+      <li><b>启动本地服务</b>
+        <p>在新终端里进入这个文件夹，然后运行：</p>
+        <pre>cd D:\jev-playground
+python playground_server.py</pre>
+        <p>macOS / Linux 如果提示找不到 <code>python</code>，改用 <code>python3</code>。终端窗口保持打开，关掉就停止服务。</p></li>
+      <li><b>打开浏览器</b>
+        <p>访问 <code>http://127.0.0.1:8787/playground.html</code>。顶部两个状态显示“已配置”就可以开始用了。</p></li>
+    </ol>
+
+    <details class="pg-faq">
+      <summary>常见问题</summary>
+      <p><b>显示“未配置”：</b>环境变量没生效。Windows 用 setx 后要重新打开终端再启动服务。</p>
+      <p><b>端口被占用：</b>先设置 <code>PLAYGROUND_PORT</code> 换个端口（如 8790），浏览器地址里的 8787 跟着改。</p>
+      <p><b>直接双击 playground.html 打不开：</b>必须通过上面的地址访问，页面要靠本地服务读取 Key。</p>
+    </details>
   </div>
 </div>
 
@@ -687,6 +735,15 @@
     });
   }
   tabs.forEach(([btnId, pId]) => $(btnId).addEventListener('click', () => selectTab(pId)));
+
+  $('panelPlayground').addEventListener('click', e => {
+    const a = e.target.closest('a[data-goto]');
+    if (!a) return;
+    e.preventDefault();
+    selectTab('panelManual');
+    document.getElementById(a.dataset.goto).scrollIntoView({ block: 'start' });
+    syncToc();
+  });
 
   const revealIO = new IntersectionObserver(entries => entries.forEach(en => {
     if (en.isIntersecting) { en.target.classList.add('shown'); revealIO.unobserve(en.target); }
