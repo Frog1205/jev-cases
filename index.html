@@ -130,6 +130,38 @@
   .shot img { display: block; width: 100%; height: auto; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
   .shot:hover img { transform: scale(1.02); }
   .shot:focus-visible, .manual-toc a:focus-visible, .step a.url:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .contact { max-width: 880px; padding-top: 36px; padding-bottom: 72px; }
+  .contact-hero { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; position: relative; overflow: hidden; }
+  .contact-hero::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), transparent); pointer-events: none; }
+  .contact-hero h1 { font-size: clamp(22px, 3vw, 30px); letter-spacing: -.02em; }
+  .contact-hero p { color: var(--muted); margin-top: 6px; max-width: 560px; }
+  .channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; margin-bottom: 28px; }
+  .channel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: transform .2s, box-shadow .2s, border-color .2s; }
+  .channel:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); border-color: color-mix(in srgb, var(--c) 45%, var(--line)); }
+  .channel-gh { --c: #24292f; }
+  :root[data-theme="dark"] .channel-gh { --c: #f0f6fc; }
+  :root[data-theme="dark"] .channel-gh .channel-ico, :root[data-theme="dark"] .channel-gh .btn-solid { color: #0d1117; }
+  .channel-top { display: flex; align-items: center; gap: 12px; }
+  .channel-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #fff; background: var(--c); flex: none; }
+  .channel-ico svg { width: 24px; height: 24px; fill: currentColor; }
+  .channel h2 { font-size: 17px; }
+  .channel .handle { font-family: ui-monospace, Consolas, monospace; font-size: 14px; color: var(--muted); }
+  .channel > p { font-size: 14px; color: var(--muted); flex: 1; }
+  .channel-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+  .btn-solid { background: var(--c); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--c); color: var(--c); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .copy-status { font-size: 13px; color: #30a46c; min-height: 1.4em; }
+  .contact h3 { font-size: 18px; margin: 8px 0 14px; }
+  .topics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px; margin-bottom: 28px; }
+  .topic { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .topic b { display: block; font-size: 15px; margin-bottom: 4px; }
+  .topic p { font-size: 14px; color: var(--muted); }
+  .checklist { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .checklist ol { padding-left: 20px; color: var(--muted); font-size: 14px; display: grid; gap: 6px; }
+  .checklist ol b { color: var(--text); }
   .in-view { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
   .in-view.shown { opacity: 1; transform: none; }
   .lightbox { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.82); display: flex; align-items: center; justify-content: center; padding: 24px; cursor: zoom-out; }
@@ -434,12 +466,53 @@
 </div>
 
 <div class="tab-panel" id="panelContact" role="tabpanel" aria-labelledby="tabBtnContact" hidden>
-  <div class="placeholder-panel">
-    <div class="ico">💬</div>
-    <h2>联系我</h2>
-    <p>问题、建议或想投稿案例，欢迎在 GitHub 或微信找我。</p>
-    <a class="cta" href="https://github.com/Frog1205" target="_blank" rel="noopener noreferrer">GitHub @Frog1205 →</a>
-    <p class="wechat-row">微信：<b>xqr1019</b></p>
+  <div class="wrap contact">
+    <div class="contact-hero in-view">
+      <h1>联系我</h1>
+      <p>问题、建议、发现分类错误，或者想投稿你自己的 Jev 案例，都欢迎来找我。</p>
+    </div>
+
+    <div class="channels">
+      <section class="channel channel-gh in-view" aria-labelledby="chGithub">
+        <div class="channel-top">
+          <span class="channel-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></span>
+          <div><h2 id="chGithub">GitHub</h2><span class="handle">@Frog1205</span></div>
+        </div>
+        <p>适合反馈问题、提交案例。提 Issue 有记录可追踪，方便其他人一起看到。</p>
+        <div class="channel-actions">
+          <a class="btn btn-solid" href="https://github.com/Frog1205/jev-cases/issues/new" target="_blank" rel="noopener noreferrer">提交 Issue →</a>
+          <a class="btn btn-ghost" href="https://github.com/Frog1205" target="_blank" rel="noopener noreferrer">主页</a>
+        </div>
+      </section>
+
+      <section class="channel in-view" style="--c:#07c160" aria-labelledby="chWechat">
+        <div class="channel-top">
+          <span class="channel-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8.7 3C4.4 3 1 5.9 1 9.5c0 2 1.1 3.8 2.8 5l-.7 2.2 2.6-1.3c.9.3 2 .5 3 .5h.6a5.6 5.6 0 01-.2-1.6c0-3.4 3.2-6.1 7.2-6.1h.6C16.1 5.2 12.7 3 8.7 3zM6 7.3a1 1 0 110 2 1 1 0 010-2zm5.4 0a1 1 0 110 2 1 1 0 010-2zM16.3 9.4c-3.5 0-6.3 2.3-6.3 5.2s2.8 5.2 6.3 5.2c.8 0 1.5-.1 2.2-.3l2.1 1.1-.6-1.8c1.4-1 2.3-2.5 2.3-4.2 0-2.9-2.8-5.2-6-5.2zm-2.2 2.9a.9.9 0 110 1.8.9.9 0 010-1.8zm4.4 0a.9.9 0 110 1.8.9.9 0 010-1.8z"/></svg></span>
+          <div><h2 id="chWechat">微信</h2><span class="handle" id="wechatId">xqr1019</span></div>
+        </div>
+        <p>适合快速交流。添加时请备注「Jev」，方便我通过。</p>
+        <div class="channel-actions">
+          <button class="btn btn-solid" id="copyWechat" type="button">复制微信号</button>
+        </div>
+        <p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+
+    <h3 class="in-view">可以找我聊什么</h3>
+    <div class="topics">
+      <div class="topic in-view"><b>📮 投稿案例</b><p>你用 Jev 做了分类、路由、打分之类的判断？欢迎分享，会收录进案例集。</p></div>
+      <div class="topic in-view"><b>🏷️ 纠正分类</b><p>发现某个案例分错类、摘要不准，或者原帖链接失效，告诉我编号就行。</p></div>
+      <div class="topic in-view"><b>💡 功能建议</b><p>想要新的筛选方式、页面功能，或者对手册内容有补充。</p></div>
+    </div>
+
+    <div class="checklist in-view">
+      <h3>投稿时最好附上</h3>
+      <ol>
+        <li><b>原帖链接</b>：X / 博客 / GitHub 等公开地址</li>
+        <li><b>一句话说明</b>：让 Jev 判断了什么，输入和输出分别是什么</li>
+        <li><b>建议分类</b>：可选，不确定就交给我来分</li>
+      </ol>
+    </div>
   </div>
 </div>
 
@@ -649,6 +722,23 @@
   });
   $('lightbox').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  let copyTimer;
+  $('copyWechat').addEventListener('click', async () => {
+    const id = $('wechatId').textContent.trim();
+    let ok = false;
+    try { await navigator.clipboard.writeText(id); ok = true; } catch {}
+    if (!ok) {
+      const range = document.createRange();
+      range.selectNodeContents($('wechatId'));
+      getSelection().removeAllRanges();
+      getSelection().addRange(range);
+      ok = document.execCommand('copy');
+    }
+    $('copyStatus').textContent = ok ? `已复制：${id}` : '复制失败，请手动选中微信号';
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { $('copyStatus').textContent = ''; }, 2500);
+  });
 
   const themeBtn = $('themeBtn');
   function applyTheme(theme) {
